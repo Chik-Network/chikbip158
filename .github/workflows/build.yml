@@ -2,8 +2,8 @@ name: build - check - upload
 
 on:
   push:
-    branches:
-    - main
+    #branches:
+    #- main
     tags:
     - '**'
   pull_request:
@@ -102,17 +102,20 @@ jobs:
             arch:
               name: ARM
               matrix: arm
+          - arch:
+              name: ARM
+              matrix: arm
 
     steps:
     - name: Clean workspace
-      uses: Chia-Network/actions/clean-workspace@main
+      uses: Chik-Network/actions/clean-workspace@main
 
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - uses: Chia-Network/actions/setup-python@main
+    - uses: Chik-Network/actions/setup-python@main
       with:
         python-version: ${{ matrix.python.major-dot-minor }}
 
@@ -178,14 +181,14 @@ jobs:
 
     steps:
     - name: Clean workspace
-      uses: Chia-Network/actions/clean-workspace@main
+      uses: Chik-Network/actions/clean-workspace@main
 
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - uses: Chia-Network/actions/setup-python@main
+    - uses: Chik-Network/actions/setup-python@main
       with:
         python-version: ${{ matrix.python.major-dot-minor }}
 
@@ -221,14 +224,14 @@ jobs:
 
     steps:
     - name: Clean workspace
-      uses: Chia-Network/actions/clean-workspace@main
+      uses: Chik-Network/actions/clean-workspace@main
 
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - uses: Chia-Network/actions/setup-python@main
+    - uses: Chik-Network/actions/setup-python@main
       with:
         python-version: ${{ matrix.python.major-dot-minor }}
 
@@ -267,14 +270,14 @@ jobs:
 
     steps:
     - name: Clean workspace
-      uses: Chia-Network/actions/clean-workspace@main
+      uses: Chik-Network/actions/clean-workspace@main
 
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - uses: Chia-Network/actions/setup-python@main
+    - uses: Chik-Network/actions/setup-python@main
       with:
         python-version: ${{ matrix.python.major-dot-minor }}
 
