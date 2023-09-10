@@ -2,10 +2,10 @@ name: build - check - upload
 
 on:
   push:
-    #branches:
+    branches:
     #- main
-    tags:
-    - '**'
+  release:
+    types: [published]
   pull_request:
     branches:
     - '**'
@@ -14,6 +14,10 @@ concurrency:
   # SHA is added to the end if on `main` to let all main workflows run
   group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/long_lived/')) && github.sha || '' }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   build-wheels:
@@ -41,12 +45,6 @@ jobs:
             runs-on:
               intel: [windows-latest]
         python:
-          - major-dot-minor: '3.7'
-            cibw-build: 'cp37-*'
-            manylinux:
-              arch: manylinux2014
-              intel: manylinux2010
-            matrix: '3.7'
           - major-dot-minor: '3.8'
             cibw-build: 'cp38-*'
             manylinux:
@@ -94,18 +92,9 @@ jobs:
               matrix: macos
               runs-on:
                 arm: [macOS, ARM64]
-                intel: [macos-latest]
-            python:
-              major-dot-minor: '3.7'
-              cibw-build: 'cp37-*'
-              matrix: '3.7'
             arch:
               name: ARM
               matrix: arm
-          - arch:
-              name: ARM
-              matrix: arm
-
     steps:
     - name: Clean workspace
       uses: Chik-Network/actions/clean-workspace@main
@@ -173,8 +162,8 @@ jobs:
               arm: [Linux, ARM64]
               intel: [ubuntu-latest]
         python:
-          - major-dot-minor: '3.9'
-            matrix: '3.9'
+          - major-dot-minor: '3.10'
+            matrix: '3.10'
         arch:
           - name: Intel
             matrix: intel
@@ -216,8 +205,8 @@ jobs:
               arm: [Linux, ARM64]
               intel: [ubuntu-latest]
         python:
-          - major-dot-minor: '3.9'
-            matrix: '3.9'
+          - major-dot-minor: '3.10'
+            matrix: '3.10'
         arch:
           - name: Intel
             matrix: intel
@@ -262,8 +251,8 @@ jobs:
               arm: [Linux, ARM64]
               intel: [ubuntu-latest]
         python:
-          - major-dot-minor: '3.9'
-            matrix: '3.9'
+          - major-dot-minor: '3.10'
+            matrix: '3.10'
         arch:
           - name: Intel
             matrix: intel
@@ -277,6 +266,11 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Set Env
+      uses: Chik-Network/actions/setjobenv@main
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - uses: Chik-Network/actions/setup-python@main
       with:
         python-version: ${{ matrix.python.major-dot-minor }}
@@ -287,32 +281,17 @@ jobs:
         name: packages
         path: ./dist
 
-    - name: Test for secrets access
-      id: check_secrets
-      shell: bash
-      run: |
-        unset HAS_SECRET
-        if [ -n "$SECRET" ]; then HAS_SECRET='true' ; fi
-        echo "HAS_SECRET=${HAS_SECRET}" >>$GITHUB_OUTPUT
-      env:
-        SECRET: "${{ secrets.test_pypi_password }}"
-
-    - name: Install twine
-      run: pip install twine
-
     - name: Publish distribution to PyPI
-      if: startsWith(github.event.ref, 'refs/tags') && steps.check_secrets.outputs.HAS_SECRET
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_NON_INTERACTIVE: 1
-        TWINE_PASSWORD: ${{ secrets.pypi_password }}
-      run: twine upload --non-interactive --skip-existing --verbose 'dist/*'
+      if: env.RELEASE == 'true'
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        packages-dir: dist/
+        skip-existing: true
 
     - name: Publish distribution to Test PyPI
-      if: steps.check_secrets.outputs.HAS_SECRET
-      env:
-        TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
-        TWINE_USERNAME: __token__
-        TWINE_NON_INTERACTIVE: 1
-        TWINE_PASSWORD: ${{ secrets.test_pypi_password }}
-      run: twine upload --non-interactive --skip-existing --verbose 'dist/*'
+      if: env.PRE_RELEASE == 'true'
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        packages-dir: dist/
+        skip-existing: true
