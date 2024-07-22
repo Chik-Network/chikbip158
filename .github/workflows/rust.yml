@@ -26,8 +26,8 @@ jobs:
           - name: macOS
             matrix: macos
             runs-on:
-              arm: [macOS, ARM64]
-              intel: [macos-latest]
+              arm: [macos-14]
+              intel: [macos-12]
           - name: Ubuntu
             matrix: ubuntu
             runs-on:
@@ -48,14 +48,6 @@ jobs:
               matrix: windows
               runs-on:
                 intel: [windows-latest]
-            arch:
-              name: ARM
-              matrix: arm
-          - os:
-              name: macOS
-              matrix: macos
-              runs-on:
-                arm: [macOS, ARM64]
             arch:
               name: ARM
               matrix: arm
