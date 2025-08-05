@@ -1,13 +1,9 @@
 # Chik BIP158
 
-![Build](https://github.com/Chik-Network/chikbip158/workflows/Build/badge.svg)
+![Build](https://github.com/Chik-Network/chikbip158/actions/workflows/build.yml/badge.svg)
 ![PyPI](https://img.shields.io/pypi/v/chikbip158?logo=pypi)
 ![PyPI - Format](https://img.shields.io/pypi/format/chikbip158?logo=pypi)
 ![GitHub](https://img.shields.io/github/license/Chik-Network/chikbip158?logo=Github)
-
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/Chik-Network/chikbip158.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Chik-Network/chikbip158/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Chik-Network/chikbip158.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Chik-Network/chikbip158/context:python)
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/Chik-Network/chikbip158.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Chik-Network/chikbip158/context:cpp)
 
 This implements the compact block filter construction in BIP 158. The code is
 not used anywhere in the Bitcoin Core code base yet. The next step towards
